@@ -19,6 +19,7 @@ export default function ScoreModal({ match, onSave, onClose }: Props) {
   const [hasPen, setHasPen] = useState(match.penaltyWinner !== undefined)
   const [penWinner, setPenWinner] = useState<'team1' | 'team2' | ''>(match.penaltyWinner ?? '')
   const [saving, setSaving] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const score1 = parseInt(s1, 10)
   const score2 = parseInt(s2, 10)
@@ -34,27 +35,33 @@ export default function ScoreModal({ match, onSave, onClose }: Props) {
   async function handleSave() {
     if (s1 === '' || s2 === '') return
     setSaving(true)
-    const updates: Partial<Match> = {
-      score1: parseInt(s1, 10),
-      score2: parseInt(s2, 10),
+    setError(null)
+    try {
+      const updates: Partial<Match> = {
+        score1: parseInt(s1, 10),
+        score2: parseInt(s2, 10),
+      }
+      if (isKnockout && hasET && et1 !== '' && et2 !== '') {
+        updates.score1ET = parseInt(et1, 10)
+        updates.score2ET = parseInt(et2, 10)
+      } else {
+        updates.score1ET = undefined
+        updates.score2ET = undefined
+        updates.penaltyWinner = undefined
+      }
+      if (isKnockout && hasET && hasPen && penWinner) {
+        updates.penaltyWinner = penWinner
+      } else if (!hasPen) {
+        updates.penaltyWinner = undefined
+      }
+      await onSave(updates)
+      onClose()
+    } catch (err) {
+      console.error('Error saving score:', err)
+      setError('Error al guardar. Verifica la conexión.')
+    } finally {
+      setSaving(false)
     }
-    if (isKnockout && hasET && et1 !== '' && et2 !== '') {
-      updates.score1ET = parseInt(et1, 10)
-      updates.score2ET = parseInt(et2, 10)
-    } else {
-      // Clear ET/pen if removed
-      updates.score1ET = undefined
-      updates.score2ET = undefined
-      updates.penaltyWinner = undefined
-    }
-    if (isKnockout && hasET && hasPen && penWinner) {
-      updates.penaltyWinner = penWinner
-    } else if (!hasPen) {
-      updates.penaltyWinner = undefined
-    }
-    await onSave(updates)
-    setSaving(false)
-    onClose()
   }
 
   return (
@@ -166,6 +173,9 @@ export default function ScoreModal({ match, onSave, onClose }: Props) {
           </div>
         )}
 
+        {error && (
+          <p className="text-red-400 text-xs mb-3 text-center">{error}</p>
+        )}
         <button
           onClick={handleSave}
           disabled={saving || s1 === '' || s2 === ''}
