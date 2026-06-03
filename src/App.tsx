@@ -8,29 +8,7 @@ import FixturePage from './pages/FixturePage'
 import BracketPage from './pages/BracketPage'
 
 export default function App() {
-  const { loading, error } = useAppInit()
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center">
-          <div className="w-10 h-10 border-2 border-slate-400 border-t-white rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-slate-400 text-sm">Cargando fixture…</p>
-        </div>
-      </div>
-    )
-  }
-
-  if (error) {
-    return (
-      <div className="flex items-center justify-center min-h-screen p-6">
-        <div className="bg-red-900/30 border border-red-700 rounded-lg p-6 max-w-md text-center">
-          <p className="text-red-400 font-medium mb-2">Error de inicialización</p>
-          <p className="text-slate-400 text-sm">{error}</p>
-        </div>
-      </div>
-    )
-  }
+  useAppInit()
 
   return (
     <AuthProvider>
