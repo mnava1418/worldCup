@@ -21,63 +21,78 @@ export default function Nav() {
   const { user, logout } = useAuth()
   const [showLogin, setShowLogin] = useState(false)
 
+  const tzToggle = (
+    <div className="flex items-center bg-slate-800 rounded-lg p-0.5 shrink-0">
+      {TZ_OPTIONS.map(opt => (
+        <button
+          key={opt.value}
+          onClick={() => setZone(opt.value)}
+          className={`px-3 py-1 rounded-md text-xs font-medium transition-colors ${
+            zone === opt.value
+              ? 'bg-slate-600 text-white'
+              : 'text-slate-400 hover:text-white'
+          }`}
+        >
+          {opt.label}
+        </button>
+      ))}
+    </div>
+  )
+
+  const authButton = user ? (
+    <button
+      onClick={() => logout()}
+      className="text-xs text-slate-400 hover:text-white transition-colors shrink-0"
+      title={user.email ?? ''}
+    >
+      Salir
+    </button>
+  ) : (
+    <button
+      onClick={() => setShowLogin(true)}
+      className="text-xs bg-slate-700 hover:bg-slate-600 text-white px-3 py-1.5 rounded-lg transition-colors shrink-0"
+    >
+      Editar
+    </button>
+  )
+
+  const navLinks = links.map(l => (
+    <NavLink
+      key={l.to}
+      to={l.to}
+      className={({ isActive }) =>
+        `px-4 py-1.5 rounded text-sm transition-colors ${
+          isActive
+            ? 'bg-slate-700 text-white'
+            : 'text-slate-400 hover:text-white hover:bg-slate-800'
+        }`
+      }
+    >
+      {l.label}
+    </NavLink>
+  ))
+
   return (
     <>
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-slate-900 border-b border-slate-800 h-14 flex items-center px-4 gap-4">
-        <span className="text-white font-semibold text-sm tracking-wide shrink-0">Mundial 2026</span>
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-slate-900 border-b border-slate-800">
+        {/* Single row on desktop, top row on mobile */}
+        <div className="flex items-center px-4 gap-3 h-14">
+          <span className="text-white font-semibold text-sm tracking-wide shrink-0">Mundial 2026</span>
 
-        <div className="flex gap-1 flex-1">
-          {links.map(l => (
-            <NavLink
-              key={l.to}
-              to={l.to}
-              className={({ isActive }) =>
-                `px-4 py-1.5 rounded text-sm transition-colors ${
-                  isActive
-                    ? 'bg-slate-700 text-white'
-                    : 'text-slate-400 hover:text-white hover:bg-slate-800'
-                }`
-              }
-            >
-              {l.label}
-            </NavLink>
-          ))}
+          {/* Nav links — desktop only */}
+          <div className="hidden sm:flex gap-1 flex-1">{navLinks}</div>
+
+          {/* Spacer on mobile */}
+          <div className="flex-1 sm:hidden" />
+
+          {tzToggle}
+          {authButton}
         </div>
 
-        {/* Timezone toggle */}
-        <div className="flex items-center bg-slate-800 rounded-lg p-0.5 shrink-0">
-          {TZ_OPTIONS.map(opt => (
-            <button
-              key={opt.value}
-              onClick={() => setZone(opt.value)}
-              className={`px-3 py-1 rounded-md text-xs font-medium transition-colors ${
-                zone === opt.value
-                  ? 'bg-slate-600 text-white'
-                  : 'text-slate-400 hover:text-white'
-              }`}
-            >
-              {opt.label}
-            </button>
-          ))}
+        {/* Nav links — mobile only, second row */}
+        <div className="flex sm:hidden border-t border-slate-800 px-2 pb-2">
+          {navLinks}
         </div>
-
-        {/* Auth */}
-        {user ? (
-          <button
-            onClick={() => logout()}
-            className="text-xs text-slate-400 hover:text-white transition-colors shrink-0"
-            title={user.email ?? ''}
-          >
-            Salir
-          </button>
-        ) : (
-          <button
-            onClick={() => setShowLogin(true)}
-            className="text-xs bg-slate-700 hover:bg-slate-600 text-white px-3 py-1.5 rounded-lg transition-colors shrink-0"
-          >
-            Editar
-          </button>
-        )}
       </nav>
 
       {showLogin && <LoginModal onClose={() => setShowLogin(false)} />}

@@ -38,7 +38,7 @@ export default function App() {
     <BrowserRouter>
       <div className="min-h-screen flex flex-col">
         <Nav />
-        <main className="flex-1 pt-14">
+        <main className="flex-1 pt-[98px] sm:pt-14">
           <Routes>
             <Route path="/" element={<Navigate to="/grupos" replace />} />
             <Route path="/grupos" element={<GroupsPage />} />
