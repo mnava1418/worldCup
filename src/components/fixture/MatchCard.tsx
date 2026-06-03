@@ -1,4 +1,5 @@
 import type { Match } from '../../types'
+import { useTimezone } from '../../context/TimezoneContext'
 
 interface Props {
   match: Match
@@ -16,6 +17,7 @@ const PHASE_LABELS: Record<string, string> = {
 }
 
 export default function MatchCard({ match, onClick }: Props) {
+  const { formatTime, label } = useTimezone()
   const hasScore = match.score1 !== undefined
   const phaseLabel = PHASE_LABELS[match.phase] ?? ''
 
@@ -24,9 +26,9 @@ export default function MatchCard({ match, onClick }: Props) {
       onClick={onClick}
       className="w-full bg-slate-900 border border-slate-800 rounded-lg px-4 py-3 flex items-center gap-3 hover:border-slate-700 hover:bg-slate-800/50 transition-colors text-left"
     >
-      {/* Time + venue */}
+      {/* Time + phase */}
       <div className="shrink-0 w-20">
-        <p className="text-xs text-slate-500">{match.timeCT} CT</p>
+        <p className="text-xs text-slate-500">{formatTime(match.utcMs)} {label}</p>
         {phaseLabel && <p className="text-xs text-slate-600 mt-0.5">{phaseLabel}</p>}
       </div>
 

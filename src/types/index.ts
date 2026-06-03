@@ -6,7 +6,7 @@ export interface Match {
   round: string
   phase: Phase
   date: string
-  timeCT: string
+  utcMs: number
   team1: string
   team2: string
   group?: string

@@ -1,4 +1,6 @@
 import { NavLink } from 'react-router-dom'
+import { useTimezone } from '../context/TimezoneContext'
+import type { TZOption } from '../context/TimezoneContext'
 
 const links = [
   { to: '/grupos', label: 'Grupos' },
@@ -6,11 +8,19 @@ const links = [
   { to: '/bracket', label: 'Bracket' },
 ]
 
+const TZ_OPTIONS: { value: TZOption; label: string }[] = [
+  { value: 'America/Mexico_City', label: 'CT' },
+  { value: 'America/New_York', label: 'ET' },
+]
+
 export default function Nav() {
+  const { zone, setZone } = useTimezone()
+
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-slate-900 border-b border-slate-800 h-14 flex items-center px-4">
-      <span className="text-white font-semibold mr-8 text-sm tracking-wide">Mundial 2026</span>
-      <div className="flex gap-1">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-slate-900 border-b border-slate-800 h-14 flex items-center px-4 gap-4">
+      <span className="text-white font-semibold text-sm tracking-wide shrink-0">Mundial 2026</span>
+
+      <div className="flex gap-1 flex-1">
         {links.map(l => (
           <NavLink
             key={l.to}
@@ -25,6 +35,23 @@ export default function Nav() {
           >
             {l.label}
           </NavLink>
+        ))}
+      </div>
+
+      {/* Timezone toggle */}
+      <div className="flex items-center bg-slate-800 rounded-lg p-0.5 shrink-0">
+        {TZ_OPTIONS.map(opt => (
+          <button
+            key={opt.value}
+            onClick={() => setZone(opt.value)}
+            className={`px-3 py-1 rounded-md text-xs font-medium transition-colors ${
+              zone === opt.value
+                ? 'bg-slate-600 text-white'
+                : 'text-slate-400 hover:text-white'
+            }`}
+          >
+            {opt.label}
+          </button>
         ))}
       </div>
     </nav>

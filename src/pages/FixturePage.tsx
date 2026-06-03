@@ -21,9 +21,7 @@ export default function FixturePage() {
     )
   }
 
-  const sorted = [...matches].sort((a, b) =>
-    a.date.localeCompare(b.date) || a.timeCT.localeCompare(b.timeCT)
-  )
+  const sorted = [...matches].sort((a, b) => a.utcMs - b.utcMs)
 
   const byDate = sorted.reduce<Record<string, Match[]>>((acc, m) => {
     acc[m.date] = acc[m.date] ?? []

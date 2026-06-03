@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import type { Match } from '../../types'
 import { calculateGroupStandings } from '../../lib/standings'
+import { useTimezone } from '../../context/TimezoneContext'
 import StandingsTable from './StandingsTable'
 import ScoreModal from '../ScoreModal'
 
@@ -17,15 +18,16 @@ function formatDate(dateStr: string): string {
 
 export default function GroupCard({ group, matches, onSave }: Props) {
   const [selected, setSelected] = useState<Match | null>(null)
+  const { formatTime, label } = useTimezone()
   const standings = calculateGroupStandings(matches, group)
   const groupMatches = matches
     .filter(m => m.phase === 'group' && m.group === group)
-    .sort((a, b) => a.date.localeCompare(b.date) || a.timeCT.localeCompare(b.timeCT))
+    .sort((a, b) => a.utcMs - b.utcMs)
 
   return (
     <>
       <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
-        <div className="px-4 py-3 border-b border-slate-800 flex items-center justify-between">
+        <div className="px-4 py-3 border-b border-slate-800">
           <h2 className="text-white font-semibold text-sm">Grupo {group}</h2>
         </div>
 
@@ -41,7 +43,7 @@ export default function GroupCard({ group, matches, onSave }: Props) {
               className="w-full px-4 py-3 flex items-center gap-2 hover:bg-slate-800/50 transition-colors text-left"
             >
               <span className="text-slate-500 text-xs w-24 shrink-0">
-                {formatDate(m.date)} {m.timeCT} CT
+                {formatDate(m.date)} {formatTime(m.utcMs)} {label}
               </span>
               <span className={`text-xs flex-1 text-right truncate ${m.score1 !== undefined ? 'text-white' : 'text-slate-400'}`}>
                 {m.team1}

@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { useAppInit } from './hooks/useAppInit'
+import { TimezoneProvider } from './context/TimezoneContext'
 import Nav from './components/Nav'
 import GroupsPage from './pages/GroupsPage'
 import FixturePage from './pages/FixturePage'
@@ -31,6 +32,7 @@ export default function App() {
   }
 
   return (
+    <TimezoneProvider>
     <BrowserRouter>
       <div className="min-h-screen flex flex-col">
         <Nav />
@@ -44,5 +46,6 @@ export default function App() {
         </main>
       </div>
     </BrowserRouter>
+    </TimezoneProvider>
   )
 }

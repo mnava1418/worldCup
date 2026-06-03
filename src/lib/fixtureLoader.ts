@@ -1,22 +1,17 @@
 import { doc, getDoc, setDoc, writeBatch, collection } from 'firebase/firestore'
 import { db } from './firebase'
 import type { Match, Phase } from '../types'
-import { toZonedTime, format } from 'date-fns-tz'
 
 const FIXTURE_URL = 'https://raw.githubusercontent.com/openfootball/worldcup.json/master/2026/worldcup.json'
-const CT_ZONE = 'America/Chicago'
 
-function parseTimeCT(dateStr: string, timeStr: string): string {
-  // timeStr format: "13:00 UTC-6" or "20:00 UTC-5"
+function parseUtcMs(dateStr: string, timeStr: string): number {
+  // timeStr format: "13:00 UTC-6" or "20:00 UTC+0"
   const match = timeStr.match(/^(\d{2}):(\d{2})\s+UTC([+-]\d+)$/)
-  if (!match) return timeStr
+  if (!match) return new Date(`${dateStr}T00:00:00Z`).getTime()
   const [, hh, mm, offsetStr] = match
   const offsetHours = parseInt(offsetStr, 10)
-  // Build ISO string in UTC
-  const utcMs =
-    new Date(`${dateStr}T${hh}:${mm}:00Z`).getTime() - offsetHours * 3_600_000
-  const ct = toZonedTime(new Date(utcMs), CT_ZONE)
-  return format(ct, 'HH:mm', { timeZone: CT_ZONE })
+  const localMs = new Date(`${dateStr}T${hh}:${mm}:00Z`).getTime()
+  return localMs - offsetHours * 3_600_000
 }
 
 function roundToPhase(round: string): Phase {
@@ -32,7 +27,6 @@ function roundToPhase(round: string): Phase {
 
 function extractGroup(groupStr?: string): string | undefined {
   if (!groupStr) return undefined
-  // "Group A" → "A"
   return groupStr.replace('Group ', '').trim()
 }
 
@@ -69,21 +63,19 @@ export async function loadFixtureIfNeeded(): Promise<void> {
       round,
       phase,
       date: dateStr,
-      timeCT: parseTimeCT(dateStr, timeStr),
+      utcMs: parseUtcMs(dateStr, timeStr),
       team1: raw.team1 as string,
       team2: raw.team2 as string,
       ground: raw.ground as string,
       ...(raw.group ? { group: extractGroup(raw.group as string) } : {}),
     }
 
-    // Assign num 103/104 to third place / final
     if (phase === 'third') match.num = 103
     if (phase === 'final') match.num = 104
 
     matches.push(match)
   }
 
-  // Batch write — Firestore limit is 500 ops per batch
   const BATCH_SIZE = 450
   for (let i = 0; i < matches.length; i += BATCH_SIZE) {
     const batch = writeBatch(db)
