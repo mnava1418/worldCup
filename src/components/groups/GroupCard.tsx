@@ -2,6 +2,7 @@ import { useState } from 'react'
 import type { Match } from '../../types'
 import { calculateGroupStandings } from '../../lib/standings'
 import { useTimezone } from '../../context/TimezoneContext'
+import { useAuth } from '../../context/AuthContext'
 import StandingsTable from './StandingsTable'
 import ScoreModal from '../ScoreModal'
 import Flag from '../Flag'
@@ -20,6 +21,7 @@ function formatDate(dateStr: string): string {
 export default function GroupCard({ group, matches, onSave }: Props) {
   const [selected, setSelected] = useState<Match | null>(null)
   const { formatTime, label } = useTimezone()
+  const { user } = useAuth()
   const standings = calculateGroupStandings(matches, group)
   const groupMatches = matches
     .filter(m => m.phase === 'group' && m.group === group)
@@ -40,8 +42,8 @@ export default function GroupCard({ group, matches, onSave }: Props) {
           {groupMatches.map(m => (
             <button
               key={m.id}
-              onClick={() => setSelected(m)}
-              className="w-full px-4 py-3 flex items-center gap-2 hover:bg-slate-800/50 transition-colors text-left"
+              onClick={() => user && setSelected(m)}
+              className={`w-full px-4 py-3 flex items-center gap-2 transition-colors text-left ${user ? 'hover:bg-slate-800/50 cursor-pointer' : 'cursor-default'}`}
             >
               <span className="text-slate-500 text-xs w-24 shrink-0">
                 {formatDate(m.date)} {formatTime(m.utcMs)} {label}

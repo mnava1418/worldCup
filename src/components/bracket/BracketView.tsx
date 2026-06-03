@@ -1,9 +1,10 @@
+import { useState } from 'react'
 import type { ReactNode } from 'react'
 import type { Match } from '../../types'
 import { resolveBracket } from '../../lib/bracketLogic'
+import { useAuth } from '../../context/AuthContext'
 import BracketMatch from './BracketMatch'
 import ScoreModal from '../ScoreModal'
-import { useState } from 'react'
 
 interface Props {
   matches: Match[]
@@ -25,6 +26,7 @@ function getByNum(matches: Match[], num: number): Match | undefined {
 
 export default function BracketView({ matches, onSave }: Props) {
   const [selected, setSelected] = useState<Match | null>(null)
+  const { user } = useAuth()
   const resolved = resolveBracket(matches)
 
   const m = (num: number) => getByNum(resolved, num)
@@ -36,9 +38,11 @@ export default function BracketView({ matches, onSave }: Props) {
       <BracketMatch
         match={match}
         onClick={() => {
+          if (!user) return
           const orig = matches.find(x => x.num === num)
           if (orig) setSelected(orig)
         }}
+        editable={!!user}
       />
     )
   }

@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useMatches } from '../hooks/useMatches'
+import { useAuth } from '../context/AuthContext'
 import MatchCard from '../components/fixture/MatchCard'
 import ScoreModal from '../components/ScoreModal'
 import type { Match } from '../types'
@@ -11,6 +12,7 @@ function formatDate(dateStr: string): string {
 
 export default function FixturePage() {
   const { matches, loading, saveScore } = useMatches()
+  const { user } = useAuth()
   const [selected, setSelected] = useState<Match | null>(null)
 
   if (loading) {
@@ -42,7 +44,7 @@ export default function FixturePage() {
             </p>
             <div className="space-y-2">
               {byDate[date].map(m => (
-                <MatchCard key={m.id} match={m} onClick={() => setSelected(m)} />
+                <MatchCard key={m.id} match={m} editable={!!user} onClick={() => user && setSelected(m)} />
               ))}
             </div>
           </div>

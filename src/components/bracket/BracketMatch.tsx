@@ -6,9 +6,10 @@ interface Props {
   match: Match
   onClick: () => void
   compact?: boolean
+  editable?: boolean
 }
 
-export default function BracketMatch({ match, onClick, compact }: Props) {
+export default function BracketMatch({ match, onClick, compact, editable = false }: Props) {
   const winner = getMatchWinner(match)
   const hasScore = match.score1 !== undefined
 
@@ -29,7 +30,7 @@ export default function BracketMatch({ match, onClick, compact }: Props) {
   return (
     <button
       onClick={onClick}
-      className="bg-slate-900 border border-slate-800 rounded overflow-hidden hover:border-slate-600 transition-colors w-full text-left"
+      className={`bg-slate-900 border border-slate-800 rounded overflow-hidden transition-colors w-full text-left ${editable ? 'hover:border-slate-600 cursor-pointer' : 'cursor-default'}`}
       style={{ minWidth: compact ? 120 : 150 }}
     >
       <div className="bg-slate-800/50 px-2 py-0.5">

@@ -5,6 +5,7 @@ import Flag from '../Flag'
 interface Props {
   match: Match
   onClick: () => void
+  editable?: boolean
 }
 
 const PHASE_LABELS: Record<string, string> = {
@@ -17,7 +18,7 @@ const PHASE_LABELS: Record<string, string> = {
   final: 'Final',
 }
 
-export default function MatchCard({ match, onClick }: Props) {
+export default function MatchCard({ match, onClick, editable = false }: Props) {
   const { formatTime, label } = useTimezone()
   const hasScore = match.score1 !== undefined
   const phaseLabel = PHASE_LABELS[match.phase] ?? ''
@@ -25,7 +26,7 @@ export default function MatchCard({ match, onClick }: Props) {
   return (
     <button
       onClick={onClick}
-      className="w-full bg-slate-900 border border-slate-800 rounded-lg px-4 py-3 flex items-center gap-3 hover:border-slate-700 hover:bg-slate-800/50 transition-colors text-left"
+      className={`w-full bg-slate-900 border border-slate-800 rounded-lg px-4 py-3 flex items-center gap-3 transition-colors text-left ${editable ? 'hover:border-slate-700 hover:bg-slate-800/50 cursor-pointer' : 'cursor-default'}`}
     >
       {/* Time + phase */}
       <div className="shrink-0 w-20">
