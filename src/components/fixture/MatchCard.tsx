@@ -1,5 +1,6 @@
 import type { Match } from '../../types'
 import { useTimezone } from '../../context/TimezoneContext'
+import Flag from '../Flag'
 
 interface Props {
   match: Match
@@ -35,14 +36,16 @@ export default function MatchCard({ match, onClick }: Props) {
       {/* Teams + score */}
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2">
-          <span className={`text-sm flex-1 truncate text-right ${hasScore ? 'text-white' : 'text-slate-400'}`}>
-            {match.team1}
+          <span className={`text-sm flex-1 flex items-center justify-end gap-1.5 min-w-0 ${hasScore ? 'text-white' : 'text-slate-400'}`}>
+            <span className="truncate">{match.team1}</span>
+            <Flag team={match.team1} />
           </span>
           <span className="text-slate-400 text-sm font-mono shrink-0 w-14 text-center">
             {hasScore ? `${match.score1} – ${match.score2}` : '– – –'}
           </span>
-          <span className={`text-sm flex-1 truncate ${hasScore ? 'text-white' : 'text-slate-400'}`}>
-            {match.team2}
+          <span className={`text-sm flex-1 flex items-center gap-1.5 min-w-0 ${hasScore ? 'text-white' : 'text-slate-400'}`}>
+            <Flag team={match.team2} />
+            <span className="truncate">{match.team2}</span>
           </span>
         </div>
         {match.score1ET !== undefined && (

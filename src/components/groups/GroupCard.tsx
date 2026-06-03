@@ -4,6 +4,7 @@ import { calculateGroupStandings } from '../../lib/standings'
 import { useTimezone } from '../../context/TimezoneContext'
 import StandingsTable from './StandingsTable'
 import ScoreModal from '../ScoreModal'
+import Flag from '../Flag'
 
 interface Props {
   group: string
@@ -45,14 +46,16 @@ export default function GroupCard({ group, matches, onSave }: Props) {
               <span className="text-slate-500 text-xs w-24 shrink-0">
                 {formatDate(m.date)} {formatTime(m.utcMs)} {label}
               </span>
-              <span className={`text-xs flex-1 text-right truncate ${m.score1 !== undefined ? 'text-white' : 'text-slate-400'}`}>
-                {m.team1}
+              <span className={`text-xs flex-1 flex items-center justify-end gap-1 min-w-0 ${m.score1 !== undefined ? 'text-white' : 'text-slate-400'}`}>
+                <span className="truncate">{m.team1}</span>
+                <Flag team={m.team1} />
               </span>
               <span className="text-slate-400 text-xs font-mono shrink-0 w-12 text-center">
                 {m.score1 !== undefined ? `${m.score1} – ${m.score2}` : '– – –'}
               </span>
-              <span className={`text-xs flex-1 truncate ${m.score1 !== undefined ? 'text-white' : 'text-slate-400'}`}>
-                {m.team2}
+              <span className={`text-xs flex-1 flex items-center gap-1 min-w-0 ${m.score1 !== undefined ? 'text-white' : 'text-slate-400'}`}>
+                <Flag team={m.team2} />
+                <span className="truncate">{m.team2}</span>
               </span>
             </button>
           ))}

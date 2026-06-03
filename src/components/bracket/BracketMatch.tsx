@@ -1,5 +1,6 @@
 import type { Match } from '../../types'
 import { getMatchWinner } from '../../lib/bracketLogic'
+import Flag from '../Flag'
 
 interface Props {
   match: Match
@@ -13,6 +14,7 @@ export default function BracketMatch({ match, onClick, compact }: Props) {
 
   const team = (name: string, scoreVal: number | undefined, isWinner: boolean) => (
     <div className={`flex items-center gap-1.5 px-2 py-1 ${isWinner ? 'text-white' : 'text-slate-400'}`}>
+      <Flag team={name} className="shrink-0" />
       <span className={`text-xs truncate flex-1 max-w-[80px] ${compact ? 'text-[10px]' : ''}`}>
         {name || 'TBD'}
       </span>

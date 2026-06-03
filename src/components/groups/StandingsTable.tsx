@@ -1,4 +1,5 @@
 import type { Standing } from '../../types'
+import Flag from '../Flag'
 
 interface Props {
   standings: Standing[]
@@ -32,6 +33,7 @@ export default function StandingsTable({ standings }: Props) {
                 <span className="w-1.5 h-1.5 rounded-full bg-yellow-500 shrink-0" />
               )}
               {i >= 3 && <span className="w-1.5 h-1.5 shrink-0" />}
+              <Flag team={s.team} />
               <span className="truncate">{s.team}</span>
             </td>
             <td className="text-center py-1.5">{s.pj}</td>
