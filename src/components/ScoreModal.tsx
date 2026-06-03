@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import type { Match } from '../types'
+import Flag from './Flag'
 
 interface Props {
   match: Match
@@ -62,7 +63,11 @@ export default function ScoreModal({ match, onSave, onClose }: Props) {
         <div className="flex justify-between items-start mb-5">
           <div>
             <p className="text-xs text-slate-500 mb-1">{match.round} · {match.ground}</p>
-            <p className="text-white font-medium">{match.team1} <span className="text-slate-500">vs</span> {match.team2}</p>
+            <p className="text-white font-medium flex items-center gap-1.5 flex-wrap">
+              {match.team1}
+              <span className="text-slate-500">vs</span>
+              {match.team2}
+            </p>
           </div>
           <button onClick={onClose} className="text-slate-500 hover:text-white text-xl leading-none">×</button>
         </div>
@@ -71,7 +76,7 @@ export default function ScoreModal({ match, onSave, onClose }: Props) {
         <p className="text-xs text-slate-500 mb-2 uppercase tracking-wider">Resultado</p>
         <div className="flex items-center gap-3 mb-4">
           <div className="flex-1">
-            <label className="text-xs text-slate-400 mb-1 block truncate">{match.team1}</label>
+            <label className="text-xs text-slate-400 mb-1 flex items-center gap-1 truncate"><Flag team={match.team1} />{match.team1}</label>
             <input
               type="number"
               min={0}
@@ -82,7 +87,7 @@ export default function ScoreModal({ match, onSave, onClose }: Props) {
           </div>
           <span className="text-slate-600 text-xl pt-5">—</span>
           <div className="flex-1">
-            <label className="text-xs text-slate-400 mb-1 block truncate">{match.team2}</label>
+            <label className="text-xs text-slate-400 mb-1 flex items-center gap-1 truncate"><Flag team={match.team2} />{match.team2}</label>
             <input
               type="number"
               min={0}
