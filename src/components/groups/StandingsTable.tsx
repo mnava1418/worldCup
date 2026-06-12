@@ -15,6 +15,8 @@ export default function StandingsTable({ standings }: Props) {
           <th className="text-center py-1.5 font-normal w-7">PG</th>
           <th className="text-center py-1.5 font-normal w-7">PE</th>
           <th className="text-center py-1.5 font-normal w-7">PP</th>
+          <th className="text-center py-1.5 font-normal w-7">GF</th>
+          <th className="text-center py-1.5 font-normal w-7">GC</th>
           <th className="text-center py-1.5 font-normal w-8">GD</th>
           <th className="text-center py-1.5 font-normal w-7">Pts</th>
         </tr>
@@ -40,6 +42,8 @@ export default function StandingsTable({ standings }: Props) {
             <td className="text-center py-1.5">{s.pg}</td>
             <td className="text-center py-1.5">{s.pe}</td>
             <td className="text-center py-1.5">{s.pp}</td>
+            <td className="text-center py-1.5">{s.gf}</td>
+            <td className="text-center py-1.5">{s.gc}</td>
             <td className="text-center py-1.5">{s.gd > 0 ? `+${s.gd}` : s.gd}</td>
             <td className="text-center py-1.5 font-semibold">{s.pts}</td>
           </tr>
