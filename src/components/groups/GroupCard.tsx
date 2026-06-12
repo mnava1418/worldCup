@@ -42,8 +42,8 @@ export default function GroupCard({ group, matches, onSave }: Props) {
           {groupMatches.map(m => (
             <button
               key={m.id}
-              onClick={() => user && setSelected(m)}
-              className={`w-full px-4 py-3 flex items-center gap-2 transition-colors text-left ${user ? 'hover:bg-slate-800/50 cursor-pointer' : 'cursor-default'}`}
+              onClick={() => setSelected(m)}
+              className="w-full px-4 py-3 flex items-center gap-2 transition-colors text-left hover:bg-slate-800/50 cursor-pointer"
             >
               <span className="text-slate-500 text-xs w-24 shrink-0">
                 {formatDate(m.date)} {formatTime(m.utcMs)} {label}
@@ -67,6 +67,7 @@ export default function GroupCard({ group, matches, onSave }: Props) {
       {selected && (
         <ScoreModal
           match={selected}
+          editable={!!user}
           onSave={u => onSave(selected.id, u)}
           onClose={() => setSelected(null)}
         />

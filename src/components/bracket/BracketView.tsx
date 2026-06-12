@@ -38,7 +38,6 @@ export default function BracketView({ matches, onSave }: Props) {
       <BracketMatch
         match={match}
         onClick={() => {
-          if (!user) return
           const orig = matches.find(x => x.num === num)
           if (orig) setSelected(orig)
         }}
@@ -118,6 +117,7 @@ export default function BracketView({ matches, onSave }: Props) {
       {selected && (
         <ScoreModal
           match={selected}
+          editable={!!user}
           onSave={u => onSave(selected.id, u)}
           onClose={() => setSelected(null)}
         />

@@ -4,11 +4,12 @@ import Flag from './Flag'
 
 interface Props {
   match: Match
+  editable: boolean
   onSave: (updates: Partial<Match>) => Promise<void>
   onClose: () => void
 }
 
-export default function ScoreModal({ match, onSave, onClose }: Props) {
+export default function ScoreModal({ match, editable, onSave, onClose }: Props) {
   const isKnockout = match.phase !== 'group'
 
   const [s1, setS1] = useState(match.score1 !== undefined ? String(match.score1) : '')
@@ -88,8 +89,9 @@ export default function ScoreModal({ match, onSave, onClose }: Props) {
               type="number"
               min={0}
               value={s1}
-              onChange={e => setS1(e.target.value)}
-              className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white text-center text-lg focus:outline-none focus:border-slate-500"
+              onChange={e => editable && setS1(e.target.value)}
+              readOnly={!editable}
+              className={`w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white text-center text-lg focus:outline-none ${editable ? 'focus:border-slate-500' : 'cursor-default opacity-70'}`}
             />
           </div>
           <span className="text-slate-600 text-xl pt-5">—</span>
@@ -99,14 +101,15 @@ export default function ScoreModal({ match, onSave, onClose }: Props) {
               type="number"
               min={0}
               value={s2}
-              onChange={e => setS2(e.target.value)}
-              className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white text-center text-lg focus:outline-none focus:border-slate-500"
+              onChange={e => editable && setS2(e.target.value)}
+              readOnly={!editable}
+              className={`w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white text-center text-lg focus:outline-none ${editable ? 'focus:border-slate-500' : 'cursor-default opacity-70'}`}
             />
           </div>
         </div>
 
         {/* Extra time (knockout + draw) */}
-        {isKnockout && isDraw && (
+        {editable && isKnockout && isDraw && (
           <div className="mb-4">
             <label className="flex items-center gap-2 text-sm text-slate-300 cursor-pointer mb-3">
               <input
@@ -176,13 +179,17 @@ export default function ScoreModal({ match, onSave, onClose }: Props) {
         {error && (
           <p className="text-red-400 text-xs mb-3 text-center">{error}</p>
         )}
-        <button
-          onClick={handleSave}
-          disabled={saving || s1 === '' || s2 === ''}
-          className="w-full py-2.5 bg-white text-slate-900 font-medium rounded-lg text-sm hover:bg-slate-200 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-        >
-          {saving ? 'Guardando…' : 'Guardar'}
-        </button>
+        {editable ? (
+          <button
+            onClick={handleSave}
+            disabled={saving || s1 === '' || s2 === ''}
+            className="w-full py-2.5 bg-white text-slate-900 font-medium rounded-lg text-sm hover:bg-slate-200 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+          >
+            {saving ? 'Guardando…' : 'Guardar'}
+          </button>
+        ) : (
+          <></>
+        )}
       </div>
     </div>
   )

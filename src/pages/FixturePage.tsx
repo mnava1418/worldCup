@@ -106,7 +106,7 @@ export default function FixturePage() {
             </p>
             <div className="space-y-2">
               {byDate[date].map(m => (
-                <MatchCard key={m.id} match={m} editable={!!user} onClick={() => user && setSelected(m)} />
+                <MatchCard key={m.id} match={m} editable={!!user} onClick={() => setSelected(m)} />
               ))}
             </div>
           </div>
@@ -116,6 +116,7 @@ export default function FixturePage() {
       {selected && (
         <ScoreModal
           match={selected}
+          editable={!!user}
           onSave={u => saveScore(selected.id, u)}
           onClose={() => setSelected(null)}
         />
