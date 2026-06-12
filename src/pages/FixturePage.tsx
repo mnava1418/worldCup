@@ -3,6 +3,7 @@ import { useMatches } from '../hooks/useMatches'
 import { useAuth } from '../context/AuthContext'
 import MatchCard from '../components/fixture/MatchCard'
 import ScoreModal from '../components/ScoreModal'
+import { isOnTVAbierta } from '../lib/tvAbierta'
 import type { Match } from '../types'
 
 function formatDate(dateStr: string): string {
@@ -21,6 +22,7 @@ export default function FixturePage() {
   const [selected, setSelected] = useState<Match | null>(null)
   const [filterDate, setFilterDate] = useState<string>('')
   const [filterTeam, setFilterTeam] = useState<string>('')
+  const [filterTV, setFilterTV] = useState(false)
 
   const sorted = useMemo(() => [...matches].sort((a, b) => a.utcMs - b.utcMs), [matches])
 
@@ -44,9 +46,10 @@ export default function FixturePage() {
     return sorted.filter(m => {
       if (filterDate && m.date !== filterDate) return false
       if (filterTeam && m.team1 !== filterTeam && m.team2 !== filterTeam) return false
+      if (filterTV && !isOnTVAbierta(m)) return false
       return true
     })
-  }, [sorted, filterDate, filterTeam])
+  }, [sorted, filterDate, filterTeam, filterTV])
 
   const byDate = useMemo(() => {
     return filtered.reduce<Record<string, Match[]>>((acc, m) => {
@@ -70,7 +73,7 @@ export default function FixturePage() {
     <div className="max-w-2xl mx-auto px-4 py-6">
       <h1 className="text-white font-semibold text-lg mb-4">Fixture completo</h1>
 
-      <div className="flex gap-2 mb-6">
+      <div className="flex gap-2 mb-3">
         <select
           value={filterDate}
           onChange={e => setFilterDate(e.target.value)}
@@ -93,6 +96,18 @@ export default function FixturePage() {
           ))}
         </select>
       </div>
+
+      <button
+        onClick={() => setFilterTV(v => !v)}
+        className={`mb-6 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${
+          filterTV
+            ? 'bg-blue-600/20 border-blue-500 text-blue-300'
+            : 'bg-slate-800 border-slate-700 text-slate-400 hover:border-slate-500 hover:text-slate-300'
+        }`}
+      >
+        <span className={`w-1.5 h-1.5 rounded-full ${filterTV ? 'bg-blue-400' : 'bg-slate-600'}`} />
+        TV abierta
+      </button>
 
       {visibleDates.length === 0 && (
         <p className="text-slate-500 text-sm text-center py-8">No hay partidos con ese filtro.</p>
