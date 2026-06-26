@@ -37,10 +37,7 @@ export default function BracketView({ matches, onSave }: Props) {
     return (
       <BracketMatch
         match={match}
-        onClick={() => {
-          const orig = matches.find(x => x.num === num)
-          if (orig) setSelected(orig)
-        }}
+        onClick={() => setSelected(match)}
         editable={!!user}
       />
     )

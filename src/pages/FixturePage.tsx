@@ -4,7 +4,20 @@ import { useAuth } from '../context/AuthContext'
 import MatchCard from '../components/fixture/MatchCard'
 import ScoreModal from '../components/ScoreModal'
 import { isOnTVAbierta } from '../lib/tvAbierta'
-import type { Match } from '../types'
+import { resolveBracket } from '../lib/bracketLogic'
+import type { Match, Phase } from '../types'
+
+const PHASE_LABELS: Record<Phase, string> = {
+  group: 'Fase de grupos',
+  r32: 'Ronda de 32',
+  r16: 'Ronda de 16',
+  qf: 'Cuartos de final',
+  sf: 'Semifinal',
+  third: '3° Lugar',
+  final: 'Final',
+}
+
+const PHASE_ORDER: Phase[] = ['group', 'r32', 'r16', 'qf', 'sf', 'third', 'final']
 
 function formatDate(dateStr: string): string {
   const d = new Date(dateStr + 'T12:00:00')
@@ -22,9 +35,11 @@ export default function FixturePage() {
   const [selected, setSelected] = useState<Match | null>(null)
   const [filterDate, setFilterDate] = useState<string>('')
   const [filterTeam, setFilterTeam] = useState<string>('')
+  const [filterPhase, setFilterPhase] = useState<Phase | ''>('')
   const [filterTV, setFilterTV] = useState(false)
 
-  const sorted = useMemo(() => [...matches].sort((a, b) => a.utcMs - b.utcMs), [matches])
+  const resolved = useMemo(() => resolveBracket(matches), [matches])
+  const sorted = useMemo(() => [...resolved].sort((a, b) => a.utcMs - b.utcMs), [resolved])
 
   const dates = useMemo(() => {
     const seen = new Set<string>()
@@ -46,10 +61,11 @@ export default function FixturePage() {
     return sorted.filter(m => {
       if (filterDate && m.date !== filterDate) return false
       if (filterTeam && m.team1 !== filterTeam && m.team2 !== filterTeam) return false
+      if (filterPhase && m.phase !== filterPhase) return false
       if (filterTV && !isOnTVAbierta(m)) return false
       return true
     })
-  }, [sorted, filterDate, filterTeam, filterTV])
+  }, [sorted, filterDate, filterTeam, filterPhase, filterTV])
 
   const byDate = useMemo(() => {
     return filtered.reduce<Record<string, Match[]>>((acc, m) => {
@@ -93,6 +109,19 @@ export default function FixturePage() {
           <option value="">Todos los países</option>
           {teams.map(t => (
             <option key={t} value={t}>{t}</option>
+          ))}
+        </select>
+      </div>
+
+      <div className="mb-3">
+        <select
+          value={filterPhase}
+          onChange={e => setFilterPhase(e.target.value as Phase | '')}
+          className="w-full bg-slate-800 text-slate-200 text-xs rounded-lg px-3 py-2 border border-slate-700 focus:outline-none focus:border-slate-500"
+        >
+          <option value="">Todas las rondas</option>
+          {PHASE_ORDER.map(p => (
+            <option key={p} value={p}>{PHASE_LABELS[p]}</option>
           ))}
         </select>
       </div>
