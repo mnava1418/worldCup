@@ -11,11 +11,16 @@ interface Props {
   onSave: (matchId: string, updates: Partial<Match>) => Promise<void>
 }
 
+const SLOT_HEIGHT = 76 // px per R32 slot
+const TOTAL_HEIGHT = 16 * SLOT_HEIGHT // 1216px
+
 function Column({ title, children }: { title: string; children: ReactNode }) {
   return (
-    <div className="flex flex-col gap-0 shrink-0">
-      <p className="text-[10px] text-slate-500 uppercase tracking-widest mb-3 text-center">{title}</p>
-      <div className="flex flex-col justify-around flex-1 gap-3">{children}</div>
+    <div className="flex flex-col shrink-0" style={{ height: TOTAL_HEIGHT }}>
+      <p className="text-[10px] text-slate-500 uppercase tracking-widest mb-2 text-center">{title}</p>
+      <div className="flex flex-col justify-around flex-1" style={{ gap: 0 }}>
+        {children}
+      </div>
     </div>
   )
 }
@@ -43,70 +48,63 @@ export default function BracketView({ matches, onSave }: Props) {
     )
   }
 
-  const r32pairs = [
-    [73, 74], [75, 76], [77, 78], [79, 80],
-    [81, 82], [83, 84], [85, 86], [87, 88],
-  ]
-  const r16pairs = [[89, 90], [91, 92], [93, 94], [95, 96]]
-  const qfPairs = [[97, 99], [98, 100]]
-  const sfPairs = [[101, 102]]
+  // R32 order: each consecutive pair feeds the same R16 match
+  // [74,77]→M89, [73,75]→M90, [83,84]→M93, [81,82]→M94
+  // [76,78]→M91, [79,80]→M92, [86,88]→M95, [85,87]→M96
+  const r32 = [74, 77, 73, 75, 83, 84, 81, 82, 76, 78, 79, 80, 86, 88, 85, 87]
+
+  // R16 order aligned with R32 groups above
+  // [89,90]→M97, [93,94]→M98, [91,92]→M99, [95,96]→M100
+  const r16 = [89, 90, 93, 94, 91, 92, 95, 96]
+
+  // QF: [97,98]→M101, [99,100]→M102
+  const qf = [97, 98, 99, 100]
+
+  // SF: [101,102]→M104
+  const sf = [101, 102]
 
   return (
     <>
       <div className="overflow-x-auto pb-6">
-        <div className="flex gap-8 p-6 items-start min-w-max">
-          {/* R32 */}
+        <div className="flex gap-6 p-6 items-start min-w-max">
+          {/* R32 — 16 slots */}
           <Column title="Ronda de 32">
-            {r32pairs.map(([a, b]) => (
-              <div key={a} className="flex flex-col gap-1.5">
-                {card(a)}
-                {card(b)}
-              </div>
+            {r32.map(num => (
+              <div key={num}>{card(num)}</div>
             ))}
           </Column>
 
-          {/* R16 */}
+          {/* R16 — 8 slots, each centered over 2 R32 matches */}
           <Column title="Ronda de 16">
-            {r16pairs.map(([a, b]) => (
-              <div key={a} className="flex flex-col gap-1.5" style={{ marginTop: 'calc(50% - 30px)' }}>
-                {card(a)}
-                {card(b)}
-              </div>
+            {r16.map(num => (
+              <div key={num}>{card(num)}</div>
             ))}
           </Column>
 
-          {/* QF */}
+          {/* QF — 4 slots */}
           <Column title="Cuartos">
-            {qfPairs.map(([a, b]) => (
-              <div key={a} className="flex flex-col gap-1.5">
-                {card(a)}
-                {card(b)}
-              </div>
+            {qf.map(num => (
+              <div key={num}>{card(num)}</div>
             ))}
           </Column>
 
-          {/* SF */}
+          {/* SF — 2 slots */}
           <Column title="Semifinal">
-            {sfPairs.map(([a, b]) => (
-              <div key={a} className="flex flex-col gap-1.5">
-                {card(a)}
-                {card(b)}
-              </div>
+            {sf.map(num => (
+              <div key={num}>{card(num)}</div>
             ))}
           </Column>
 
-          {/* Final + 3rd */}
-          <div className="flex flex-col gap-6 shrink-0">
-            <Column title="Final">
-              <div className="flex flex-col gap-1.5">
-                {card(104)}
-              </div>
-            </Column>
-            <Column title="3° Lugar">
-              <div className="flex flex-col gap-1.5">
+          {/* Final + 3rd place */}
+          <div className="flex flex-col shrink-0" style={{ height: TOTAL_HEIGHT }}>
+            <p className="text-[10px] text-slate-500 uppercase tracking-widest mb-2 text-center">Final</p>
+            <div className="flex flex-col flex-1" style={{ justifyContent: 'center', gap: `${SLOT_HEIGHT * 2}px` }}>
+              <div>{card(104)}</div>
+              <div>
+                <p className="text-[10px] text-slate-500 uppercase tracking-widest mb-2 text-center">3° Lugar</p>
                 {card(103)}
               </div>
-            </Column>
+            </div>
           </div>
         </div>
       </div>

@@ -4,7 +4,11 @@
       "WebFetch(domain:en.wikipedia.org)",
       "WebFetch(domain:raw.githubusercontent.com)",
       "Bash(xargs ls)",
-      "Bash(npx tsc *)"
+      "Bash(npx tsc *)",
+      "Skill(run)",
+      "Bash(npm run *)",
+      "Bash(/Users/mnavapena/.claude/chromium-cli/chromium-cli --screenshot /private/tmp/claude-501/-Users-mnavapena-Documents-coding-sites-worldCup/89baf58f-2edb-48b8-b055-bda02f7ef43d/scratchpad/bracket.png --url \"http://localhost:5174/bracket\" --wait 4000 --width 1400 --height 900)",
+      "Bash(echo \"exit: $?\")"
     ]
   }
 }
