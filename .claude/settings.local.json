@@ -8,7 +8,16 @@
       "Skill(run)",
       "Bash(npm run *)",
       "Bash(/Users/mnavapena/.claude/chromium-cli/chromium-cli --screenshot /private/tmp/claude-501/-Users-mnavapena-Documents-coding-sites-worldCup/89baf58f-2edb-48b8-b055-bda02f7ef43d/scratchpad/bracket.png --url \"http://localhost:5174/bracket\" --wait 4000 --width 1400 --height 900)",
-      "Bash(echo \"exit: $?\")"
+      "Bash(echo \"exit: $?\")",
+      "WebSearch",
+      "WebFetch(domain:www.aljazeera.com)",
+      "WebFetch(domain:www.cbssports.com)",
+      "WebFetch(domain:www.skysports.com)",
+      "WebFetch(domain:www.clarosports.com)",
+      "WebFetch(domain:www.thefamilytravelguy.com)",
+      "WebFetch(domain:arxiv.org)",
+      "Bash(curl -s \"https://en.wikipedia.org/w/api.php?action=parse&page=Template:2026_FIFA_World_Cup_third-place_table&prop=wikitext&format=json\")",
+      "Bash(python3 -c ' *)"
     ]
   }
 }
